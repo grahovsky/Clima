@@ -11,7 +11,7 @@ import CoreLocation
 import Alamofire
 import SwiftyJSON
 
-class WeatherViewController: UIViewController, CLLocationManagerDelegate {
+class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate {
     
     //Constants
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
@@ -33,17 +33,14 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         //TODO:Set up the location manager here.
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.requestWhenInUseAuthorization()
         
-        
     }
     
-    
-    
+
     //MARK: - Networking
     /***************************************************************/
     
@@ -60,7 +57,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
                 
             }
             else {
-                print("Error \(response.result.error)")
+                print("Error \(String(describing: response.result.error))")
                 self.cityLabel.text = "Connection Issues"
             }
         }
@@ -70,7 +67,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
 
     //MARK: - JSON Parsing
     /***************************************************************/
-    
     
     //Write the updateWeatherData method here:
     func updateWeatherData(json: JSON) {
@@ -92,11 +88,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     
-    
-    
     //MARK: - UI Updates
     /***************************************************************/
-    
     
     //Write the updateUIWithWeatherData method here:
     
@@ -109,12 +102,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     
-    
-    
-    
     //MARK: - Location Manager Delegate Methods
     /***************************************************************/
-    
     
     //Write the didUpdateLocations method here:
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -135,7 +124,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    
     //Write the didFailWithError method here:
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
@@ -146,16 +134,20 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     //MARK: - Change City Delegate methods
     /***************************************************************/
     
-    
     //Write the userEnteredANewCityName Delegate method here:
-    
-    
+    func userEnteredANewCityName(city: String) {
+        print(city)
+    }
     
     //Write the PrepareForSegue Method here
-    
-    
-    
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "changeCityName" {
+            let destinationVC = segue.destination as! ChangeCityViewController
+            destinationVC.delegate = self
+        }
+        
+    }
     
 }
 
